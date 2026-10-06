@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en-CA">
+<html lang="fr-CA">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Québec Votes 2026</title>
+<title>Le Québec vote 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Public+Sans:wght@400;500;600;700&display=swap">
@@ -142,7 +142,7 @@ h1 .yr { font-variation-settings: "wdth" 62; font-weight: 500; color: var(--mute
 .parties { display: grid; gap: 2px; margin-top: 14px; }
 .prow {
   display: grid; align-items: center; gap: 4px 16px;
-  grid-template-columns: minmax(170px, 1.1fr) 92px minmax(120px, 3fr) 96px;
+  grid-template-columns: minmax(170px, 1.1fr) 136px minmax(120px, 3fr) 96px;
   padding: 9px 0; border-top: 1px solid var(--line);
 }
 .prow:first-child { border-top: 0; }
@@ -326,7 +326,7 @@ footer p { margin: 0; }
 @media (max-width: 680px) {
   .side { grid-template-columns: minmax(0, 1fr); }
   .counts { grid-template-columns: minmax(0, 1fr); }
-  .prow { grid-template-columns: minmax(0, 1fr) 96px; grid-template-areas: "id seats" "bar vote"; }
+  .prow { grid-template-columns: minmax(0, 1fr) 140px; grid-template-areas: "id seats" "bar vote"; }
   .p-id { grid-area: id; } .p-seats { grid-area: seats; align-items: flex-end; } .p-bar { grid-area: bar; } .p-vote { grid-area: vote; }
   .p-seats .n { font-size: 24px; }
   .insets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
@@ -344,44 +344,44 @@ footer p { margin: 0; }
 
   <header class="mast">
     <div>
-      <div class="eyebrow">Québec general election · Monday, October 5, 2026</div>
-      <h1>Québec Votes<span class="yr">2026</span></h1>
+      <div class="eyebrow">Élections générales québécoises · lundi 5 octobre 2026</div>
+      <h1>Le Québec vote<span class="yr">2026</span></h1>
     </div>
     <div class="status" aria-live="polite">
-      <span class="live-pill" id="livePill" data-state="loading"><span class="dot"></span><span id="liveTxt">Connecting</span></span>
-      <span id="updated">Waiting for Élections Québec</span>
+      <span class="live-pill" id="livePill" data-state="loading"><span class="dot"></span><span id="liveTxt">Connexion</span></span>
+      <span id="updated">En attente d’Élections Québec</span>
       <span class="sep" aria-hidden="true"></span>
       <span id="countdown"></span>
-      <button class="btn" id="refreshBtn" type="button">Refresh now</button>
-      <button class="btn" id="themeBtn" type="button" aria-label="Switch colour theme">Theme: auto</button>
+      <button class="btn" id="refreshBtn" type="button">Actualiser</button>
+      <button class="btn" id="themeBtn" type="button" aria-label="Changer le thème de couleurs">Thème : auto</button>
     </div>
   </header>
 
   <div class="banner" id="banner" hidden></div>
 
-  <section class="race" aria-label="Seat count">
+  <section class="race" aria-label="Décompte des sièges">
     <div>
-      <p class="headline" id="headline">Waiting for the first results</p>
-      <p class="headline-sub" id="headlineSub">Polls closed at 8:00 p.m. 64 of 127 seats are needed for a majority.</p>
+      <p class="headline" id="headline">En attente des premiers résultats</p>
+      <p class="headline-sub" id="headlineSub">Les bureaux de vote ont fermé à 20 h. Il faut 64 sièges sur 127 pour former un gouvernement majoritaire.</p>
       <div class="strip-wrap">
-        <div class="strip" id="strip" role="img" aria-label="Seat strip"></div>
-        <span class="maj" aria-hidden="true"><span>Majority · 64</span></span>
+        <div class="strip" id="strip" role="img" aria-label="Répartition des sièges"></div>
+        <span class="maj" aria-hidden="true"><span>Majorité · 64</span></span>
       </div>
       <div class="parties" id="parties"></div>
     </div>
-    <aside class="counts" aria-label="Count progress">
+    <aside class="counts" aria-label="Progression du dépouillement">
       <div class="count">
-        <div class="lbl">Polling stations reported</div>
+        <div class="lbl">Bureaux de vote dépouillés</div>
         <div class="val" id="cPolls">–</div>
         <div class="meter"><span id="mPolls" style="width:0"></span></div>
       </div>
       <div class="count">
-        <div class="lbl">Ridings reporting</div>
+        <div class="lbl">Circonscriptions avec résultats</div>
         <div class="val" id="cRidings">–</div>
         <div class="meter"><span id="mRidings" style="width:0"></span></div>
       </div>
       <div class="count">
-        <div class="lbl">Ballots counted</div>
+        <div class="lbl">Bulletins comptés</div>
         <div class="val" id="cVotes">–</div>
         <div class="meter"><span id="mVotes" style="width:0"></span></div>
       </div>
@@ -389,83 +389,83 @@ footer p { margin: 0; }
   </section>
 
   <div class="main">
-    <section class="card" aria-label="Riding map">
+    <section class="card" aria-label="Carte des circonscriptions">
       <div class="card-h">
-        <h2>Ridings</h2>
-        <div class="presets" id="presets" role="group" aria-label="Map view">
-          <button class="chip" type="button" data-region="province" aria-pressed="true">Whole province</button>
-          <button class="chip" type="button" data-region="south" aria-pressed="false">Southern Québec</button>
-          <button class="chip" type="button" data-region="gmtl" aria-pressed="false">Greater Montréal</button>
-          <button class="chip" type="button" data-region="mtl" aria-pressed="false">Montréal &amp; Laval</button>
-          <button class="chip" type="button" data-region="qc" aria-pressed="false">Québec City</button>
-          <button class="chip" type="button" data-region="gat" aria-pressed="false">Gatineau</button>
+        <h2>Circonscriptions</h2>
+        <div class="presets" id="presets" role="group" aria-label="Vue de la carte">
+          <button class="chip" type="button" data-region="province" aria-pressed="true">Tout le Québec</button>
+          <button class="chip" type="button" data-region="south" aria-pressed="false">Sud du Québec</button>
+          <button class="chip" type="button" data-region="gmtl" aria-pressed="false">Grand Montréal</button>
+          <button class="chip" type="button" data-region="mtl" aria-pressed="false">Montréal et Laval</button>
+          <button class="chip" type="button" data-region="qc" aria-pressed="false">Ville de Québec</button>
+          <button class="chip" type="button" data-region="abi" aria-pressed="false">Abitibi-Témiscamingue</button>
         </div>
       </div>
       <div class="map-area" id="mapArea">
-        <svg id="map" role="img" aria-label="Map of Québec's 127 ridings coloured by leading party"></svg>
+        <svg id="map" role="img" aria-label="Carte des 127 circonscriptions du Québec, colorées selon le parti en tête"></svg>
         <div class="zoom-btns">
-          <button type="button" id="zIn" aria-label="Zoom in">+</button>
-          <button type="button" id="zOut" aria-label="Zoom out">−</button>
+          <button type="button" id="zIn" aria-label="Zoom avant">+</button>
+          <button type="button" id="zOut" aria-label="Zoom arrière">−</button>
         </div>
         <div class="tip" id="tip" hidden></div>
       </div>
       <div class="insets" id="insets">
-        <button class="inset" type="button" data-region="mtl"><svg data-inset="mtl" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Montréal &amp; Laval</span></button>
-        <button class="inset" type="button" data-region="qc"><svg data-inset="qc" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Québec City</span></button>
-        <button class="inset" type="button" data-region="gat"><svg data-inset="gat" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Gatineau</span></button>
+        <button class="inset" type="button" data-region="mtl"><svg data-inset="mtl" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Montréal et Laval</span></button>
+        <button class="inset" type="button" data-region="qc"><svg data-inset="qc" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Ville de Québec</span></button>
+        <button class="inset" type="button" data-region="abi"><svg data-inset="abi" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Abitibi-Témiscamingue</span></button>
       </div>
       <div class="map-foot">
         <div class="legend">
-          <span class="k"><i></i>Won</span>
-          <span class="k"><i class="tint"></i>Leading</span>
-          <span class="k"><i class="none"></i>No results yet</span>
+          <span class="k"><i></i>Élu</span>
+          <span class="k"><i class="tint"></i>En avance</span>
+          <span class="k"><i class="none"></i>Aucun résultat</span>
         </div>
-        <span class="hint">Drag to pan · pinch or ⌘/Ctrl + scroll to zoom · click a riding for details</span>
+        <span class="hint">Glissez pour déplacer · pincez ou ⌘/Ctrl + défilement pour zoomer · cliquez sur une circonscription pour les détails</span>
       </div>
     </section>
 
     <div class="side">
-      <section class="card" aria-label="Riding details">
-        <div class="card-h"><h2 id="panelTitle">Closest races</h2><span class="note" id="panelNote"></span></div>
+      <section class="card" aria-label="Détails de la circonscription">
+        <div class="card-h"><h2 id="panelTitle">Courses serrées</h2><span class="note" id="panelNote"></span></div>
         <div class="panel-body" id="panel"></div>
       </section>
-      <section class="card" aria-label="Latest changes">
-        <div class="card-h"><h2>Latest changes</h2><span class="note">Newest first</span></div>
+      <section class="card" aria-label="Derniers changements">
+        <div class="card-h"><h2>Derniers changements</h2><span class="note">Plus récents en premier</span></div>
         <div class="panel-body feed-wrap"><ul class="feed" id="feed"></ul></div>
       </section>
     </div>
   </div>
 
-  <section class="card" aria-label="All ridings">
+  <section class="card" aria-label="Toutes les circonscriptions">
     <div class="card-h">
-      <h2 id="tblTitle">All 127 ridings</h2>
+      <h2 id="tblTitle">Les 127 circonscriptions</h2>
       <div class="filters">
-        <label class="sr" for="q">Search ridings or candidates</label>
-        <input id="q" type="search" placeholder="Search riding or candidate" autocomplete="off">
-        <label class="sr" for="fParty">Party</label>
+        <label class="sr" for="q">Rechercher une circonscription ou un candidat</label>
+        <input id="q" type="search" placeholder="Circonscription ou candidat" autocomplete="off">
+        <label class="sr" for="fParty">Parti</label>
         <select id="fParty">
-          <option value="">All parties</option>
+          <option value="">Tous les partis</option>
           <option value="PQ">PQ</option><option value="CAQ">CAQ</option><option value="PLQ">PLQ</option>
-          <option value="QS">QS</option><option value="PCQ">PCQ</option><option value="OTH">Other</option>
+          <option value="QS">QS</option><option value="PCQ">PCQ</option><option value="OTH">Autres</option>
         </select>
-        <label class="sr" for="fStatus">Status</label>
+        <label class="sr" for="fStatus">Statut</label>
         <select id="fStatus">
-          <option value="">Any status</option><option value="won">Won</option>
-          <option value="leading">Leading</option><option value="none">No results yet</option>
+          <option value="">Tous les statuts</option><option value="won">Élu</option>
+          <option value="leading">En avance</option><option value="none">Aucun résultat</option>
         </select>
-        <label class="sr" for="fSort">Sort</label>
+        <label class="sr" for="fSort">Trier</label>
         <select id="fSort">
-          <option value="close">Closest races first</option>
-          <option value="reported">Most counted first</option>
-          <option value="name">Riding A–Z</option>
+          <option value="close">Courses les plus serrées</option>
+          <option value="reported">Dépouillement le plus avancé</option>
+          <option value="name">Circonscription A–Z</option>
         </select>
       </div>
     </div>
     <div class="tbl-wrap">
       <table>
         <thead><tr>
-          <th scope="col">Riding</th><th scope="col">Leading candidate</th><th scope="col" class="num">Margin</th>
-          <th scope="col">Polls counted</th><th scope="col">Status</th>
+          <th scope="col">Circonscription</th><th scope="col">Candidat en tête</th><th scope="col" class="num">Écart</th>
+          <th scope="col">Bureaux dépouillés</th><th scope="col">Statut</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -474,8 +474,8 @@ footer p { margin: 0; }
   </section>
 
   <footer>
-    <p><strong>Source.</strong> Preliminary results from the <a href="https://www.dgeq.org/donnees.html" target="_blank" rel="noopener">Élections Québec open data feed</a>. Élections Québec updates it every 2 to 5 minutes. <span id="sourceNote">This page checks for a new version every minute.</span> Riding boundaries are the 2026 electoral map (127 ridings).</p>
-    <p><strong>How seats are marked won.</strong> Élections Québec does not declare winners on election night. This page marks a riding won when every polling station has reported, when the leader's margin is larger than all ballots plausibly left to count, or when the lead is safe for the share of polls still out (at least 15% counted; the margin needed falls from about 24 points at 15% counted to about 3 points at 90%). TV networks use their own models and may call ridings earlier or differently.</p>
+    <p><strong>Source.</strong> Résultats préliminaires tirés du <a href="https://www.dgeq.org/donnees.html" target="_blank" rel="noopener">flux de données ouvertes d’Élections Québec</a>, mis à jour toutes les 2 à 5 minutes. <span id="sourceNote">Cette page vérifie s’il y a du nouveau chaque minute.</span> Les limites sont celles de la carte électorale de 2026 (127 circonscriptions).</p>
+    <p><strong>Comment un siège est déclaré élu.</strong> Élections Québec ne déclare pas de gagnants le soir du scrutin. Cette page marque une circonscription comme élue quand tous les bureaux de vote ont été dépouillés, quand l’avance du meneur dépasse tous les bulletins qui pourraient rester à compter, ou quand l’avance est sûre compte tenu des bureaux restants (au moins 15 % dépouillés; l’écart requis passe d’environ 24 points à 15 % dépouillés à environ 3 points à 90 %). Les réseaux de télé utilisent leurs propres modèles et peuvent déclarer des circonscriptions plus tôt ou autrement.</p>
   </footer>
 </div>
 
@@ -494,21 +494,24 @@ footer p { margin: 0; }
 
   const PARTY_BY_NUM = { 8: 'PQ', 27: 'CAQ', 6: 'PLQ', 40: 'QS', 22: 'PCQ' };
   const PARTY = {
-    PQ:  { short: 'PQ',  name: 'Parti Québécois' },
-    CAQ: { short: 'CAQ', name: 'Coalition avenir Québec' },
-    PLQ: { short: 'PLQ', name: 'Parti libéral du Québec' },
-    QS:  { short: 'QS',  name: 'Québec solidaire' },
-    PCQ: { short: 'PCQ', name: 'Parti conservateur du Québec' },
-    OTH: { short: 'Other', name: 'Other parties & independents' },
+    PQ:  { short: 'PQ',  name: 'Parti québécois', art: 'le PQ' },
+    CAQ: { short: 'CAQ', name: 'Coalition avenir Québec', art: 'la CAQ' },
+    PLQ: { short: 'PLQ', name: 'Parti libéral du Québec', art: 'le PLQ' },
+    QS:  { short: 'QS',  name: 'Québec solidaire', art: 'QS' },
+    PCQ: { short: 'PCQ', name: 'Parti conservateur du Québec', art: 'le PCQ' },
+    OTH: { short: 'Autres', name: 'Autres partis et indépendants', art: 'les autres partis' },
   };
   const ORDER = ['PQ', 'CAQ', 'PLQ', 'QS', 'PCQ', 'OTH'];
   const partyKey = num => PARTY_BY_NUM[num] || 'OTH';
   const pvar = key => `var(--${key.toLowerCase()})`;
 
-  const nf = new Intl.NumberFormat('en-CA');
-  const pf1 = new Intl.NumberFormat('en-CA', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const tf = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: TZ });
-  const tfs = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', second: '2-digit', timeZone: TZ });
+  const nf = new Intl.NumberFormat('fr-CA');
+  const pf1 = new Intl.NumberFormat('fr-CA', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const tf = new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: TZ });
+  const tfs = new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', second: '2-digit', timeZone: TZ });
+  const PCT = '\u202f%';
+  const pl = (n, one, many) => `${nf.format(n)} ${n > 1 ? many : one}`;
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const parseTime = s => { if (!s) return null; const d = new Date(String(s).replace(',', '.')); return isNaN(d) ? null : d; };
@@ -528,11 +531,12 @@ footer p { margin: 0; }
   // ---------- Theme toggle ----------
   const themeBtn = $('themeBtn');
   const themes = ['auto', 'dark', 'light'];
+  const themeName = { auto: 'auto', dark: 'sombre', light: 'clair' };
   let theme = (() => { try { return localStorage.getItem('qc2026-theme') || 'auto'; } catch { return 'auto'; } })();
   const applyTheme = () => {
     if (theme === 'auto') delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = theme;
-    themeBtn.textContent = 'Theme: ' + theme;
+    themeBtn.textContent = 'Thème : ' + themeName[theme];
   };
   themeBtn.addEventListener('click', () => {
     theme = themes[(themes.indexOf(theme) + 1) % themes.length];
@@ -629,7 +633,7 @@ footer p { margin: 0; }
         nbVoteExerce: cast, nbElecteurInscrit: reg, tauxParticipation: turnout, isResultatsFinaux: !!fin,
         candidats: cands.map(([id, pnum, votes, pct]) => {
           const b = candById.get(id) || {};
-          return { numeroCandidat: id, numeroPartiPolitique: pnum, nbVoteTotal: votes, tauxVote: pct, prenom: '', nom: b.name || 'Candidate', abreviationPartiPolitique: b.abbr || '' };
+          return { numeroCandidat: id, numeroPartiPolitique: pnum, nbVoteTotal: votes, tauxVote: pct, prenom: '', nom: b.name || 'Candidat', abreviationPartiPolitique: b.abbr || '' };
         }),
       })),
     };
@@ -715,7 +719,7 @@ footer p { margin: 0; }
     gmtl: [-74.5, 45.15, -73.05, 45.98],
     mtl: [-73.98, 45.40, -73.47, 45.71],
     qc: [-71.56, 46.72, -71.03, 46.99],
-    gat: [-76.02, 45.37, -75.43, 45.63],
+    abi: [-79.7, 46.2, -75.4, 49.25],
   };
   function projBox([x0, y0, x1, y1]) {
     const xs = [], ys = [];
@@ -800,16 +804,16 @@ footer p { margin: 0; }
   const tip = $('tip');
   const mapArea = $('mapArea');
   function statusLine(r) {
-    if (r.status === 'none') return '<span class="muted">No results yet</span>';
-    if (r.status === 'tied') return '<strong>Tied</strong>';
+    if (r.status === 'none') return '<span class="muted">Aucun résultat</span>';
+    if (r.status === 'tied') return '<strong>Égalité</strong>';
     const lead = r.cands[0];
-    const verb = r.status === 'won' ? 'won' : `leads by ${nf.format(r.marginVotes)}`;
+    const verb = r.status === 'won' ? 'élu' : `en avance de ${pl(r.marginVotes, 'voix', 'voix')}`;
     return `<span class="row"><span class="sw" style="--c:${pvar(r.leader)}"></span><strong>${esc(PARTY[r.leader].short === 'Other' ? lead.abbr : PARTY[r.leader].short)}</strong>&nbsp;${verb}</span>
-      <span class="muted">${esc(lead.name)} · ${pf1.format(lead.pct)}%</span>`;
+      <span class="muted">${esc(lead.name)} · ${pf1.format(lead.pct)}${PCT}</span>`;
   }
   function showTip(code, ev) {
     const r = ridings.get(code);
-    tip.innerHTML = `<b>${esc(r.name)}</b>${statusLine(r)}<div class="muted">${r.total ? `${nf.format(r.done)} of ${nf.format(r.total)} polling stations` : 'Counting has not started'}</div>`;
+    tip.innerHTML = `<b>${esc(r.name)}</b>${statusLine(r)}<div class="muted">${r.total ? `${nf.format(r.done)} bureaux de vote sur ${nf.format(r.total)}` : 'Dépouillement pas encore commencé'}</div>`;
     tip.hidden = false;
     const box = mapArea.getBoundingClientRect();
     let x = ev.clientX - box.left + 14, y = ev.clientY - box.top + 14;
@@ -865,19 +869,20 @@ footer p { margin: 0; }
     const anyResults = parties.some(p => p.won + p.lead > 0);
     const hl = $('headline'), sub = $('headlineSub');
     const nm = k => PARTY[k].short;
+    const art = k => PARTY[k].art;
     if (!anyResults) {
-      hl.textContent = 'Waiting for the first results';
-      sub.textContent = 'Polls closed at 8:00 p.m. 64 of 127 seats are needed for a majority.';
+      hl.textContent = 'En attente des premiers résultats';
+      sub.textContent = 'Les bureaux de vote ont fermé à 20 h. Il faut 64 sièges sur 127 pour former un gouvernement majoritaire.';
     } else {
       const second = parties[1];
-      if (top.won >= MAJORITY) hl.textContent = `${nm(top.key)} wins a majority government`;
-      else if (topSeats >= MAJORITY) hl.textContent = `${nm(top.key)} is ahead in enough ridings for a majority`;
-      else if (stats && stats.isResultatsFinaux) hl.textContent = `${nm(top.key)} wins the most seats, short of a majority`;
-      else hl.textContent = `${nm(top.key)} is ahead in ${topSeats} ridings`;
+      if (top.won >= MAJORITY) hl.textContent = `${cap(art(top.key))} forme un gouvernement majoritaire`;
+      else if (topSeats >= MAJORITY) hl.textContent = `${cap(art(top.key))} mène dans assez de circonscriptions pour être majoritaire`;
+      else if (stats && stats.isResultatsFinaux) hl.textContent = `${cap(art(top.key))} remporte le plus de sièges, sans majorité`;
+      else hl.textContent = `${cap(art(top.key))} mène dans ${pl(topSeats, 'circonscription', 'circonscriptions')}`;
       const gap = MAJORITY - top.won;
       sub.textContent = top.won >= MAJORITY
-        ? `${top.won} seats won so far, with ${top.lead} more where ${nm(top.key)} leads. ${nm(second.key)} is second with ${second.won + second.lead}.`
-        : `${top.won} won so far, ${gap} short of the 64 needed for a majority. ${nm(second.key)} is next with ${second.won + second.lead} (${second.won} won).`;
+        ? `${pl(top.won, 'siège remporté', 'sièges remportés')} jusqu’ici, et ${art(top.key)} mène dans ${top.lead} autres. ${cap(art(second.key))} suit avec ${second.won + second.lead}.`
+        : `${pl(top.won, 'élu', 'élus')} jusqu’ici, à ${pl(gap, 'siège', 'sièges')} des 64 requis pour la majorité. ${cap(art(second.key))} suit avec ${second.won + second.lead} (${pl(second.won, 'élu', 'élus')}).`;
     }
 
     // Seat strip: party by party, won seats first then leads, then uncounted.
@@ -889,16 +894,16 @@ footer p { margin: 0; }
     while (cells.length < SEATS) cells.push('<i></i>');
     const strip = $('strip');
     strip.innerHTML = cells.join('');
-    strip.setAttribute('aria-label', parties.filter(p => p.won + p.lead).map(p => `${nm(p.key)}: ${p.won} won, ${p.lead} leading`).join('; ') || 'No seats reported yet');
+    strip.setAttribute('aria-label', parties.filter(p => p.won + p.lead).map(p => `${nm(p.key)} : ${pl(p.won, 'élu', 'élus')}, ${p.lead} en avance`).join('; ') || 'Aucun siège pour le moment');
 
     $('parties').innerHTML = parties.map(p => {
       const showName = p.key === 'OTH' ? PARTY.OTH.name : PARTY[p.key].name;
       const w = (p.won / SEATS) * 100, l = (p.lead / SEATS) * 100;
       return `<div class="prow" style="--c:${pvar(p.key)}">
         <div class="p-id"><span class="sw"></span><b>${esc(PARTY[p.key].short)}</b><span title="${esc(showName)}">${esc(showName)}</span></div>
-        <div class="p-seats"><span class="n">${p.won + p.lead}</span><span class="sub">${p.won} won · ${p.lead} lead</span></div>
+        <div class="p-seats"><span class="n">${p.won + p.lead}</span><span class="sub">${pl(p.won, 'élu', 'élus')} · ${p.lead} en avance</span></div>
         <div class="p-bar"><div class="track">${p.won ? `<span class="won" style="width:${w}%"></span>` : ''}${p.lead ? `<span class="lead" style="width:${l}%"></span>` : ''}<i class="maj" aria-hidden="true"></i></div></div>
-        <div class="p-vote"><b>${pf1.format(p.pct)}%</b><span>${nf.format(p.votes)} votes</span></div>
+        <div class="p-vote"><b>${pf1.format(p.pct)}${PCT}</b><span>${pl(p.votes, 'vote', 'votes')}</span></div>
       </div>`;
     }).join('');
   }
@@ -906,13 +911,13 @@ footer p { margin: 0; }
   function renderCounts() {
     if (!stats) return;
     const pr = stats.nbBureauVote ? (stats.nbBureauVoteRempli / stats.nbBureauVote) * 100 : 0;
-    $('cPolls').innerHTML = `${pf1.format(pr)}%<small>${nf.format(stats.nbBureauVoteRempli || 0)} of ${nf.format(stats.nbBureauVote || 0)}</small>`;
+    $('cPolls').innerHTML = `${pf1.format(pr)}${PCT}<small>${nf.format(stats.nbBureauVoteRempli || 0)} sur ${nf.format(stats.nbBureauVote || 0)}</small>`;
     $('mPolls').style.width = pr + '%';
     const withRes = [...ridings.values()].filter(r => r.status !== 'none').length;
-    $('cRidings').innerHTML = `${withRes}<small>of ${SEATS}</small>`;
+    $('cRidings').innerHTML = `${withRes}<small>sur ${SEATS}</small>`;
     $('mRidings').style.width = (withRes / SEATS) * 100 + '%';
     const cast = stats.nbVoteExerce || 0, reg = stats.nbElecteurInscrit || 0;
-    $('cVotes').innerHTML = `${nf.format(cast)}<small>${reg ? `${pf1.format((cast / reg) * 100)}% of ${nf.format(reg)} electors` : ''}</small>`;
+    $('cVotes').innerHTML = `${nf.format(cast)}<small>${reg ? `${pf1.format((cast / reg) * 100)}${PCT} des ${nf.format(reg)} électeurs` : ''}</small>`;
     $('mVotes').style.width = reg ? clamp((cast / reg) * 100, 0, 100) + '%' : '0';
   }
 
@@ -924,24 +929,24 @@ footer p { margin: 0; }
   function renderPanel() {
     const panel = $('panel');
     if (!selected) {
-      $('panelTitle').textContent = 'Closest races';
-      $('panelNote').textContent = 'Smallest leads, not yet won';
+      $('panelTitle').textContent = 'Courses serrées';
+      $('panelNote').textContent = 'Plus petites avances, non décidées';
       const close = [...ridings.values()]
         .filter(r => r.status === 'leading' || r.status === 'tied')
         .sort((a, b) => a.marginPts - b.marginPts)
         .slice(0, 8);
       if (!close.length) {
-        panel.innerHTML = `<p class="empty">${stats ? 'No close races right now. Ridings where the lead is still in play will show up here.' : 'Close races appear here once counting starts.'}</p>
-          <p class="empty">Click a riding on the map or in the table to see every candidate's count.</p>`;
+        panel.innerHTML = `<p class="empty">${stats ? 'Aucune course serrée pour le moment. Les circonscriptions encore incertaines apparaîtront ici.' : 'Les courses serrées apparaîtront ici dès le début du dépouillement.'}</p>
+          <p class="empty">Cliquez sur une circonscription, sur la carte ou dans le tableau, pour voir le décompte de chaque candidat.</p>`;
         return;
       }
       panel.innerHTML = `<ul class="close-list">${close.map(r => {
         const a = r.cands[0], b = r.cands[1];
         return `<li><button type="button" data-code="${r.code}">
           <span class="nm">${esc(r.name)}</span>
-          <span class="mg">${r.status === 'tied' ? 'Tied' : `+${nf.format(r.marginVotes)}`}</span>
-          <span class="ds"><span class="sw" style="--c:${r.leader ? pvar(r.leader) : 'var(--muted)'}"></span>${esc(partyLabel(r, a))} over ${b ? esc(partyLabel(r, b)) : '–'} · ${pf1.format(r.marginPts)} pts</span>
-          <span class="rp">${Math.round(r.p * 100)}% counted</span>
+          <span class="mg">${r.status === 'tied' ? 'Égalité' : `+${nf.format(r.marginVotes)}`}</span>
+          <span class="ds"><span class="sw" style="--c:${r.leader ? pvar(r.leader) : 'var(--muted)'}"></span>${esc(partyLabel(r, a))} devant ${b ? esc(partyLabel(r, b)) : '–'} · ${pf1.format(r.marginPts)} pts</span>
+          <span class="rp">${Math.round(r.p * 100)}${PCT} dépouillé</span>
         </button></li>`;
       }).join('')}</ul>`;
       panel.querySelectorAll('button[data-code]').forEach(b => b.addEventListener('click', () => select(+b.dataset.code)));
@@ -949,27 +954,27 @@ footer p { margin: 0; }
     }
 
     const r = ridings.get(selected);
-    $('panelTitle').textContent = 'Riding';
-    $('panelNote').textContent = r.code ? `No. ${r.code}` : '';
+    $('panelTitle').textContent = 'Circonscription';
+    $('panelNote').textContent = r.code ? `nº ${r.code}` : '';
     let pill;
-    if (r.status === 'won') pill = `<span class="pill won" style="--c:${pvar(r.leader)}">${esc(partyLabel(r, r.cands[0]))} won</span>`;
-    else if (r.status === 'leading') pill = `<span class="pill lead" style="--c:${pvar(r.leader)}">${esc(partyLabel(r, r.cands[0]))} leads by ${nf.format(r.marginVotes)} votes</span>`;
-    else if (r.status === 'tied') pill = `<span class="pill">Tied</span>`;
-    else pill = `<span class="pill none">No results yet</span>`;
+    if (r.status === 'won') pill = `<span class="pill won" style="--c:${pvar(r.leader)}">Élu · ${esc(partyLabel(r, r.cands[0]))}</span>`;
+    else if (r.status === 'leading') pill = `<span class="pill lead" style="--c:${pvar(r.leader)}">${esc(partyLabel(r, r.cands[0]))} en avance de ${pl(r.marginVotes, 'voix', 'voix')}</span>`;
+    else if (r.status === 'tied') pill = `<span class="pill">Égalité</span>`;
+    else pill = `<span class="pill none">Aucun résultat</span>`;
     const hasVotes = r.status !== 'none';
-    const turnout = r.turnout != null ? `Turnout ${pf1.format(r.turnout)}%` : (r.reg ? `${nf.format(r.reg)} electors` : '');
+    const turnout = r.turnout != null ? `Participation ${pf1.format(r.turnout)}${PCT}` : (r.reg ? `${nf.format(r.reg)} électeurs` : '');
     panel.innerHTML = `
-      <button class="d-back" type="button" id="backBtn">← Closest races</button>
+      <button class="d-back" type="button" id="backBtn">← Courses serrées</button>
       <h3 class="d-name">${esc(r.name)}</h3>
       ${pill}
-      <div class="d-meta"><span>${r.total ? `${nf.format(r.done)} of ${nf.format(r.total)} polling stations` : 'Counting has not started'}</span><span>${esc(turnout)}</span></div>
+      <div class="d-meta"><span>${r.total ? `${nf.format(r.done)} bureaux de vote sur ${nf.format(r.total)}` : 'Dépouillement pas encore commencé'}</span><span>${esc(turnout)}</span></div>
       <div class="meter"><span style="width:${r.p * 100}%"></span></div>
       <ol class="cands">${r.cands.map((c, i) => {
         const k = partyKey(c.pnum);
         return `<li class="cand${i === 0 && hasVotes ? ' first' : ''}${r.status === 'won' ? ' called' : ''}" style="--c:${pvar(k)}">
-          <div class="top"><span class="nm">${esc(c.name)}${c.inc ? '<em>Incumbent</em>' : ''}</span><span class="vt">${hasVotes ? nf.format(c.votes) : ''}</span></div>
+          <div class="top"><span class="nm">${esc(c.name)}${c.inc ? '<em>En poste</em>' : ''}</span><span class="vt">${hasVotes ? nf.format(c.votes) : ''}</span></div>
           <div class="bar"><span style="width:${hasVotes ? c.pct : 0}%"></span></div>
-          <div class="sub"><span>${esc(k === 'OTH' ? (c.abbr || 'Independent') : PARTY[k].name)}</span><span>${hasVotes ? pf1.format(c.pct) + '%' : ''}</span></div>
+          <div class="sub"><span>${esc(k === 'OTH' ? (c.abbr || 'Indépendant') : PARTY[k].name)}</span><span>${hasVotes ? pf1.format(c.pct) + PCT : ''}</span></div>
         </li>`;
       }).join('')}</ol>`;
     $('backBtn').addEventListener('click', () => select(null, { zoom: false }));
@@ -978,7 +983,7 @@ footer p { margin: 0; }
   function renderFeed() {
     const list = $('feed');
     if (!store.events.length) {
-      list.innerHTML = `<li><time></time><span class="empty">New leads and won seats appear here as each update comes in from Élections Québec.</span></li>`;
+      list.innerHTML = `<li><time></time><span class="empty">Les nouvelles avances et les sièges remportés s’afficheront ici à chaque mise à jour d’Élections Québec.</span></li>`;
       return;
     }
     list.innerHTML = store.events.slice(0, 80).map(e => {
@@ -986,9 +991,9 @@ footer p { margin: 0; }
       const when = tf.format(new Date(e.t));
       const link = r ? `<button type="button" data-code="${r.code}">${esc(r.name)}</button>` : '';
       let txt = '';
-      if (e.type === 'win') txt = `<span class="sw" style="--c:${pvar(e.party)}"></span><b>${esc(PARTY[e.party].short)}</b> wins ${link}`;
-      else if (e.type === 'flip') txt = `<span class="sw" style="--c:${pvar(e.party)}"></span><b>${esc(PARTY[e.party].short)}</b> takes the lead from ${esc(PARTY[e.from].short)} in ${link}`;
-      else if (e.type === 'first') txt = `First results in ${e.n} more riding${e.n === 1 ? '' : 's'}`;
+      if (e.type === 'win') txt = `<span class="sw" style="--c:${pvar(e.party)}"></span><b>${esc(PARTY[e.party].short)}</b> remporte ${link}`;
+      else if (e.type === 'flip') txt = `<span class="sw" style="--c:${pvar(e.party)}"></span><b>${esc(PARTY[e.party].short)}</b> prend les devants sur ${esc(PARTY[e.from].art)} dans ${link}`;
+      else if (e.type === 'first') txt = `Premiers résultats dans ${e.n} ${e.n > 1 ? 'autres circonscriptions' : 'autre circonscription'}`;
       return `<li><time>${when}</time><span>${txt}</span></li>`;
     }).join('');
     list.querySelectorAll('button[data-code]').forEach(b => b.addEventListener('click', () => select(+b.dataset.code, { scroll: true })));
@@ -1019,19 +1024,19 @@ footer p { margin: 0; }
         : '<span class="st none">–</span>';
       const margin = has ? `+${nf.format(r.marginVotes)} <span style="color:var(--muted)">· ${pf1.format(r.marginPts)} pts</span>` : '';
       let st;
-      if (r.status === 'won') st = `<span class="st won" style="--c:${pvar(r.leader)}">Won</span>`;
-      else if (r.status === 'leading') st = `<span class="st" style="--c:${pvar(r.leader)}">Leading</span>`;
-      else if (r.status === 'tied') st = `<span class="st">Tied</span>`;
-      else st = `<span class="st none">No results</span>`;
+      if (r.status === 'won') st = `<span class="st won" style="--c:${pvar(r.leader)}">Élu</span>`;
+      else if (r.status === 'leading') st = `<span class="st" style="--c:${pvar(r.leader)}">En avance</span>`;
+      else if (r.status === 'tied') st = `<span class="st">Égalité</span>`;
+      else st = `<span class="st none">Aucun résultat</span>`;
       return `<tr tabindex="0" data-code="${r.code}" aria-selected="${r.code === selected}">
         <td><strong>${esc(r.name)}</strong></td>
         <td>${who}</td>
         <td class="num">${margin}</td>
-        <td><span class="mini"><span style="width:${r.p * 100}%"></span></span>${r.total ? `${Math.round(r.p * 100)}%` : '–'}</td>
+        <td><span class="mini"><span style="width:${r.p * 100}%"></span></span>${r.total ? `${Math.round(r.p * 100)}${PCT}` : '–'}</td>
         <td>${st}</td>
       </tr>`;
-    }).join('') || `<tr><td colspan="5" class="empty">No ridings match these filters.</td></tr>`;
-    $('tblTitle').textContent = rows.length === SEATS ? 'All 127 ridings' : `${rows.length} of 127 ridings`;
+    }).join('') || `<tr><td colspan="5" class="empty">Aucune circonscription ne correspond à ces filtres.</td></tr>`;
+    $('tblTitle').textContent = rows.length === SEATS ? 'Les 127 circonscriptions' : `${rows.length} circonscriptions sur 127`;
   }
   tbody.addEventListener('click', ev => {
     const tr = ev.target.closest('tr[data-code]');
@@ -1053,7 +1058,7 @@ footer p { margin: 0; }
     renderTable();
     const won = [...ridings.values()].filter(r => r.status === 'won').length;
     $('tblFoot').textContent = stats
-      ? `${won} won · ${[...ridings.values()].filter(r => r.status === 'leading').length} leading · ${[...ridings.values()].filter(r => r.status === 'none').length} with no results yet. Click a row to open the riding.`
+      ? `${pl(won, 'élu', 'élus')} · ${[...ridings.values()].filter(r => r.status === 'leading').length} en avance · ${[...ridings.values()].filter(r => r.status === 'none').length} sans résultat. Cliquez sur une rangée pour ouvrir la circonscription.`
       : '';
   }
 
@@ -1069,7 +1074,7 @@ footer p { margin: 0; }
     $('refreshBtn').disabled = true;
     try {
       const res = await fetch(FEED_URL, { cache: 'no-cache' });
-      if (!res.ok) throw new Error(`Élections Québec answered with HTTP ${res.status}.`);
+      if (!res.ok) throw new Error(`Élections Québec a répondu HTTP ${res.status}`);
       const etag = res.headers.get('etag');
       const data = await res.json();
       lastCheck = new Date();
@@ -1082,13 +1087,13 @@ footer p { margin: 0; }
       firstLoad = false;
       banner.hidden = true;
       const final = stats && stats.isResultatsFinaux;
-      setLive(final ? 'final' : 'live', final ? 'Final' : 'Live');
-      updated.textContent = feedTime ? `Results as of ${tf.format(feedTime)}` : 'Results received';
-      updated.title = `Last checked ${tfs.format(lastCheck)}`;
+      setLive(final ? 'final' : 'live', final ? 'Final' : 'En direct');
+      updated.textContent = feedTime ? `Résultats en date de ${tf.format(feedTime)}` : 'Résultats reçus';
+      updated.title = `Dernière vérification à ${tfs.format(lastCheck)}`;
     } catch (err) {
-      setLive('error', 'Reconnecting');
+      setLive('error', 'Reconnexion');
       banner.hidden = false;
-      banner.textContent = `Can't reach the Élections Québec results feed right now (${err.message || 'network error'}). The page keeps the last results and tries again every minute.`;
+      banner.textContent = `Impossible de joindre le flux de résultats d’Élections Québec pour le moment (${err.message || 'erreur réseau'}). La page garde les derniers résultats et réessaie chaque minute.`;
       if (firstLoad) renderAll();
     } finally {
       loading = false;
@@ -1099,24 +1104,24 @@ footer p { margin: 0; }
   }
   function tick() {
     const s = Math.max(0, Math.round((nextAt - Date.now()) / 1000));
-    countdown.textContent = loading ? 'Checking…' : `Next check in ${s}s`;
+    countdown.textContent = loading ? 'Vérification…' : `Prochaine vérification dans ${s} s`;
     if (!loading && Date.now() >= nextAt) load();
   }
   const ageFmt = d => {
     const m = Math.round((Date.now() - d) / 60000);
-    return m < 1 ? 'just now' : m === 1 ? '1 min ago' : m < 90 ? `${m} min ago` : `${Math.round(m / 60)} h ago`;
+    return m < 1 ? 'à l’instant' : m < 90 ? `il y a ${m} min` : `il y a ${Math.round(m / 60)} h`;
   };
   function showSnapshotStatus() {
     const final = stats && stats.isResultatsFinaux;
-    setLive(final ? 'final' : 'live', final ? 'Final' : 'Live');
-    updated.textContent = feedTime ? `Results as of ${tf.format(feedTime)}` : 'Results received';
-    countdown.textContent = feedTime ? `${ageFmt(feedTime)} · updates on its own` : 'Updates on its own';
+    setLive(final ? 'final' : 'live', final ? 'Final' : 'En direct');
+    updated.textContent = feedTime ? `Résultats en date de ${tf.format(feedTime)}` : 'Résultats reçus';
+    countdown.textContent = feedTime ? `${ageFmt(feedTime)} · mise à jour automatique` : 'Mise à jour automatique';
   }
 
   function start(prev) {
     if (SNAP) {
       $('refreshBtn').hidden = true;
-      $('sourceNote').textContent = 'This shared page is republished with every new update, and open copies refresh on their own.';
+      $('sourceNote').textContent = 'Cette page partagée est republiée à chaque mise à jour, et les copies ouvertes se rafraîchissent d’elles-mêmes.';
       applyFeed(snapToFeed(SNAP));
       for (const r of ridings.values()) if (r.status === 'leading' && store.called[r.code] === r.leader) r.status = 'won';
       renderAll();
