@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Québec Votes 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: masthead + race-to-64 band on top; zoomable riding map beside a riding panel; full riding table below. */
+:root {
+  --bg: #EDF0F3;
+  --surface: #FFFFFF;
+  --surface-2: #F5F7F9;
+  --ink: #111A22;
+  --ink-2: #3B4854;
+  --muted: #677480;
+  --line: #D8DFE5;
+  --line-strong: #B7C1CA;
+  --map-empty: #D9DFE5;
+  --live: #17895A;
+  --warn: #A35F00;
+  --focus: #1F5FD1;
+
+  /* Party colours: validated as a set (CVD ΔE ≥ 8, normal-vision ΔE ≥ 15). */
+  --pq: #2A4BA6;
+  --caq: #22A6DD;
+  --plq: #D42A3A;
+  --qs: #F07A1A;
+  --pcq: #B04FBF;
+  --oth: #8C97A2;
+  --lead-alpha: .48;
+
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Public Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1116; --surface: #121A21; --surface-2: #17212A; --ink: #E6ECF1; --ink-2: #B8C4CE;
+    --muted: #8593A0; --line: #223039; --line-strong: #34434F; --map-empty: #25313B;
+    --live: #3CC583; --warn: #E3A33A; --focus: #7AA7FF;
+    --pq: #3A5CC2; --oth: #6F7B87; --lead-alpha: .55;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1116; --surface: #121A21; --surface-2: #17212A; --ink: #E6ECF1; --ink-2: #B8C4CE;
+  --muted: #8593A0; --line: #223039; --line-strong: #34434F; --map-empty: #25313B;
+  --live: #3CC583; --warn: #E3A33A; --focus: #7AA7FF;
+  --pq: #3A5CC2; --oth: #6F7B87; --lead-alpha: .55;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 15px/1.45 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+a { color: inherit; }
+
+.wrap {
+  max-width: 1480px; margin: 0 auto;
+  padding-inline: clamp(16px, 3vw, 36px);
+  padding-block: max(18px, env(safe-area-inset-top)) 56px;
+  display: grid; gap: 18px;
+}
+
+/* ---------- Masthead ---------- */
+.mast {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 14px 28px; padding-bottom: 16px; border-bottom: 2px solid var(--ink);
+}
+.eyebrow {
+  font: 600 12px/1.2 var(--font-body); letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+}
+h1 {
+  margin: 6px 0 0; font-family: var(--font-display); font-weight: 800;
+  font-variation-settings: "wdth" 118; font-size: clamp(30px, 4.6vw, 52px);
+  line-height: .95; letter-spacing: -.015em; text-wrap: balance;
+}
+h1 .yr { font-variation-settings: "wdth" 62; font-weight: 500; color: var(--muted); margin-left: .12em; }
+.status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--ink-2); }
+.live-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 5px 11px 5px 9px;
+  border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface);
+  font: 700 12px/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase;
+}
+.live-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.live-pill[data-state="live"] .dot { background: var(--live); animation: beat 2s ease-out infinite; }
+.live-pill[data-state="error"] { border-color: var(--warn); color: var(--warn); }
+.live-pill[data-state="error"] .dot { background: var(--warn); }
+.live-pill[data-state="final"] .dot { background: var(--ink); }
+@keyframes beat {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--live) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.status .sep { width: 1px; height: 14px; background: var(--line-strong); }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 7px;
+  border: 1px solid var(--line-strong); background: var(--surface); font-size: 13px; font-weight: 600;
+}
+.btn:hover { border-color: var(--ink-2); }
+.btn[disabled] { opacity: .55; cursor: default; }
+
+.banner {
+  border: 1px solid var(--warn); color: var(--ink); background: color-mix(in srgb, var(--warn) 10%, var(--surface));
+  border-radius: 8px; padding: 10px 14px; font-size: 14px;
+}
+
+/* ---------- Race band ---------- */
+.race { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, 320px); gap: 18px 36px; align-items: start; }
+.headline {
+  margin: 0; font-family: var(--font-display); font-weight: 700; font-variation-settings: "wdth" 100;
+  font-size: clamp(20px, 2.4vw, 28px); line-height: 1.15; letter-spacing: -.01em; text-wrap: balance;
+}
+.headline-sub { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
+
+.strip-wrap { position: relative; margin: 18px 0 6px; padding-top: 18px; }
+.strip { display: flex; gap: 2px; height: 30px; }
+.strip i { flex: 1 1 0; min-width: 0; border-radius: 2px; background: var(--map-empty); }
+.strip i.won { background: var(--c); }
+.strip i.lead { background: color-mix(in srgb, var(--c) calc(var(--lead-alpha) * 100%), var(--surface)); }
+.strip-wrap > .maj {
+  position: absolute; top: 0; bottom: -6px; width: 0; border-left: 2px solid var(--ink);
+  left: calc((100% - 252px) / 127 * 64 + 127px);
+}
+.strip-wrap > .maj span {
+  position: absolute; top: -2px; left: 6px; white-space: nowrap;
+  font: 700 11px/1 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink);
+}
+.strip-scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+.parties { display: grid; gap: 2px; margin-top: 14px; }
+.prow {
+  display: grid; align-items: center; gap: 4px 16px;
+  grid-template-columns: minmax(170px, 1.1fr) 92px minmax(120px, 3fr) 96px;
+  padding: 9px 0; border-top: 1px solid var(--line);
+}
+.prow:first-child { border-top: 0; }
+.p-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sw { width: 12px; height: 12px; border-radius: 3px; background: var(--c); flex: none; }
+.p-id b { font-family: var(--font-display); font-variation-settings: "wdth" 110; font-weight: 800; font-size: 16px; }
+.p-id span { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.p-seats { display: flex; flex-direction: column; line-height: 1.05; }
+.p-seats .n { font-family: var(--font-display); font-variation-settings: "wdth" 80; font-weight: 800; font-size: 30px; letter-spacing: -.01em; }
+.p-seats .sub { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.track { position: relative; height: 14px; display: flex; gap: 2px; }
+.track::before { content: ""; position: absolute; inset: 6px 0; background: var(--line); border-radius: 2px; }
+.track .won, .track .lead { position: relative; height: 100%; }
+.track .won { background: var(--c); border-radius: 2px 0 0 2px; }
+.track .lead {
+  border-radius: 0 3px 3px 0;
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--c) 70%, transparent) 0 2px, transparent 2px 5px),
+    color-mix(in srgb, var(--c) calc(var(--lead-alpha) * 100%), var(--surface));
+}
+.track .won:only-child, .track .lead:first-child { border-radius: 2px 3px 3px 2px; }
+.track .maj { position: absolute; top: -4px; bottom: -4px; left: calc(64 / 127 * 100%); border-left: 1.5px solid var(--ink); }
+.p-vote { text-align: right; line-height: 1.15; }
+.p-vote b { font-size: 16px; font-weight: 700; }
+.p-vote span { display: block; font-size: 11.5px; color: var(--muted); }
+
+.counts { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.count .lbl { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.count .val { font-family: var(--font-display); font-variation-settings: "wdth" 85; font-weight: 750; font-size: 26px; line-height: 1.1; }
+.count .val small { font: 500 13px/1 var(--font-body); color: var(--muted); margin-left: 4px; }
+.meter { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 6px; }
+.meter span { display: block; height: 100%; background: var(--ink); border-radius: 3px; transition: width .6s ease; }
+
+/* ---------- Main grid ---------- */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 18px; align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.card-h {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px;
+  padding: 12px 14px; border-bottom: 1px solid var(--line);
+}
+.card-h h2 { margin: 0; font: 700 13px/1.2 var(--font-body); letter-spacing: .07em; text-transform: uppercase; }
+.card-h .note { font-size: 12px; color: var(--muted); }
+
+.presets { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+.presets::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line-strong);
+  background: var(--surface); font-size: 13px; font-weight: 600; white-space: nowrap;
+}
+.chip:hover { border-color: var(--ink-2); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+
+.map-area { position: relative; touch-action: none; }
+#map { display: block; width: 100%; height: auto; max-height: 78vh; cursor: grab; }
+#map:active { cursor: grabbing; }
+#map path.r { transition: fill .6s ease, fill-opacity .6s ease; }
+#map path.r.pulse { animation: flash 2.4s ease-out 2; }
+@keyframes flash { 0%, 40% { stroke: var(--ink); stroke-width: 2.2px; } 100% { stroke: var(--surface); } }
+.zoom-btns { position: absolute; top: 10px; right: 10px; display: grid; gap: 4px; }
+.zoom-btns button {
+  width: 32px; height: 32px; border-radius: 7px; border: 1px solid var(--line-strong);
+  background: var(--surface); font-size: 18px; font-weight: 600; line-height: 1;
+}
+.zoom-btns button:hover { border-color: var(--ink-2); }
+.tip {
+  position: absolute; pointer-events: none; z-index: 5; min-width: 180px; max-width: 260px;
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px;
+  padding: 9px 11px; font-size: 13px; box-shadow: 0 6px 22px rgba(10, 20, 30, .16);
+}
+.tip b { display: block; font-size: 14px; margin-bottom: 2px; }
+.tip .row { display: flex; align-items: center; gap: 6px; }
+.tip .muted { color: var(--muted); font-size: 12px; }
+
+.map-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  padding: 10px 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-2);
+}
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.legend .k { display: inline-flex; align-items: center; gap: 6px; }
+.legend .k i { width: 14px; height: 10px; border-radius: 2px; background: var(--ink-2); }
+.legend .k i.tint { background: color-mix(in srgb, var(--ink-2) 45%, var(--surface)); }
+.legend .k i.none { background: var(--map-empty); }
+.hint { color: var(--muted); }
+
+.insets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 0 14px 14px; }
+.inset {
+  display: grid; gap: 4px; padding: 6px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--surface-2); text-align: left;
+}
+.inset:hover { border-color: var(--ink-2); }
+.inset svg { display: block; width: 100%; height: 130px; pointer-events: none; }
+.inset span { font-size: 12px; font-weight: 600; color: var(--ink-2); padding: 0 2px; }
+
+/* ---------- Side panel ---------- */
+.side { display: grid; gap: 18px; min-width: 0; }
+.panel-body { padding: 12px 14px 14px; }
+.close-list, .feed { list-style: none; margin: 0; padding: 0; }
+.close-list li + li { border-top: 1px solid var(--line); }
+.close-list button {
+  width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center;
+  text-align: left; background: none; border: 0; padding: 9px 2px;
+}
+.close-list button:hover .nm { text-decoration: underline; }
+.close-list .nm { font-weight: 600; }
+.close-list .mg { font-weight: 700; text-align: right; }
+.close-list .ds { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.close-list .rp { font-size: 12px; color: var(--muted); text-align: right; }
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+
+.d-back { background: none; border: 0; padding: 0; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+.d-back:hover { text-decoration: underline; }
+.d-name {
+  margin: 8px 0 6px; font-family: var(--font-display); font-weight: 800; font-variation-settings: "wdth" 96;
+  font-size: 26px; line-height: 1.05; text-wrap: balance;
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; border: 1.5px solid var(--c, var(--line-strong));
+}
+.pill.won { background: var(--c); border-color: var(--c); color: #fff; }
+.pill.lead { background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.pill.none { border-color: var(--line-strong); color: var(--muted); }
+.d-meta { margin: 10px 0 4px; font-size: 13px; color: var(--ink-2); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.cands { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 11px; }
+.cand .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.cand .nm { font-weight: 600; min-width: 0; }
+.cand .nm em { font-style: normal; font-size: 11px; font-weight: 600; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 4px; padding: 0 4px; margin-left: 4px; white-space: nowrap; }
+.cand .vt { font-weight: 700; }
+.cand .bar { height: 8px; border-radius: 0 4px 4px 0; background: var(--line); margin: 4px 0 3px; position: relative; overflow: hidden; }
+.cand .bar span { position: absolute; inset: 0 auto 0 0; background: var(--c); border-radius: 0 4px 4px 0; transition: width .6s ease; }
+.cand .sub { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.cand.first .nm::before { content: "✓ "; color: var(--ink); }
+.cand.first:not(.called) .nm::before { content: ""; }
+
+.feed li { display: grid; grid-template-columns: 62px 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.feed li:first-child { border-top: 0; }
+.feed time { color: var(--muted); font-size: 12px; padding-top: 1px; }
+.feed .sw { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: -1px; }
+.feed button { background: none; border: 0; padding: 0; font-weight: 600; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 2px; }
+.feed-wrap { max-height: 360px; overflow-y: auto; }
+
+/* ---------- Table ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters input, .filters select {
+  padding: 6px 10px; border-radius: 7px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 13.5px;
+}
+.filters input { width: 210px; max-width: 100%; }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 14px; }
+th {
+  text-align: left; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+  font-weight: 700; padding: 9px 14px; border-bottom: 1px solid var(--line); white-space: nowrap;
+}
+td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--surface-2); }
+tbody tr[aria-selected="true"] { background: color-mix(in srgb, var(--focus) 9%, var(--surface)); }
+td.num, th.num { text-align: right; }
+.who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.who b { font-family: var(--font-display); font-variation-settings: "wdth" 110; font-weight: 800; }
+.mini { display: inline-block; width: 64px; height: 6px; border-radius: 3px; background: var(--line); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+.mini span { display: block; height: 100%; background: var(--ink-2); }
+.st { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1.5px solid var(--c, var(--line-strong)); white-space: nowrap; }
+.st.won { background: var(--c); color: #fff; }
+.st.none { color: var(--muted); }
+.tbl-foot { padding: 10px 14px; font-size: 12.5px; color: var(--muted); }
+
+footer { color: var(--muted); font-size: 12.5px; line-height: 1.55; display: grid; gap: 6px; max-width: 900px; }
+footer p { margin: 0; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 1100px) {
+  .main { grid-template-columns: minmax(0, 1fr); }
+  .side { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 860px) {
+  .race { grid-template-columns: minmax(0, 1fr); }
+  .counts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .side { grid-template-columns: minmax(0, 1fr); }
+  .counts { grid-template-columns: minmax(0, 1fr); }
+  .prow { grid-template-columns: minmax(0, 1fr) 96px; grid-template-areas: "id seats" "bar vote"; }
+  .p-id { grid-area: id; } .p-seats { grid-area: seats; align-items: flex-end; } .p-bar { grid-area: bar; } .p-vote { grid-area: vote; }
+  .p-seats .n { font-size: 24px; }
+  .insets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .inset svg { height: 84px; }
+  .strip { height: 22px; gap: 1px; }
+  .strip-wrap > .maj { left: calc((100% - 126px) / 127 * 64 + 63.5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div>
+      <div class="eyebrow">Québec general election · Monday, October 5, 2026</div>
+      <h1>Québec Votes<span class="yr">2026</span></h1>
+    </div>
+    <div class="status" aria-live="polite">
+      <span class="live-pill" id="livePill" data-state="loading"><span class="dot"></span><span id="liveTxt">Connecting</span></span>
+      <span id="updated">Waiting for Élections Québec</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span id="countdown"></span>
+      <button class="btn" id="refreshBtn" type="button">Refresh now</button>
+      <button class="btn" id="themeBtn" type="button" aria-label="Switch colour theme">Theme: auto</button>
+    </div>
+  </header>
+
+  <div class="banner" id="banner" hidden></div>
+
+  <section class="race" aria-label="Seat count">
+    <div>
+      <p class="headline" id="headline">Waiting for the first results</p>
+      <p class="headline-sub" id="headlineSub">Polls closed at 8:00 p.m. 64 of 127 seats are needed for a majority.</p>
+      <div class="strip-wrap">
+        <div class="strip" id="strip" role="img" aria-label="Seat strip"></div>
+        <span class="maj" aria-hidden="true"><span>Majority · 64</span></span>
+      </div>
+      <div class="parties" id="parties"></div>
+    </div>
+    <aside class="counts" aria-label="Count progress">
+      <div class="count">
+        <div class="lbl">Polling stations reported</div>
+        <div class="val" id="cPolls">–</div>
+        <div class="meter"><span id="mPolls" style="width:0"></span></div>
+      </div>
+      <div class="count">
+        <div class="lbl">Ridings reporting</div>
+        <div class="val" id="cRidings">–</div>
+        <div class="meter"><span id="mRidings" style="width:0"></span></div>
+      </div>
+      <div class="count">
+        <div class="lbl">Ballots counted</div>
+        <div class="val" id="cVotes">–</div>
+        <div class="meter"><span id="mVotes" style="width:0"></span></div>
+      </div>
+    </aside>
+  </section>
+
+  <div class="main">
+    <section class="card" aria-label="Riding map">
+      <div class="card-h">
+        <h2>Ridings</h2>
+        <div class="presets" id="presets" role="group" aria-label="Map view">
+          <button class="chip" type="button" data-region="province" aria-pressed="true">Whole province</button>
+          <button class="chip" type="button" data-region="south" aria-pressed="false">Southern Québec</button>
+          <button class="chip" type="button" data-region="gmtl" aria-pressed="false">Greater Montréal</button>
+          <button class="chip" type="button" data-region="mtl" aria-pressed="false">Montréal &amp; Laval</button>
+          <button class="chip" type="button" data-region="qc" aria-pressed="false">Québec City</button>
+          <button class="chip" type="button" data-region="gat" aria-pressed="false">Gatineau</button>
+        </div>
+      </div>
+      <div class="map-area" id="mapArea">
+        <svg id="map" role="img" aria-label="Map of Québec's 127 ridings coloured by leading party"></svg>
+        <div class="zoom-btns">
+          <button type="button" id="zIn" aria-label="Zoom in">+</button>
+          <button type="button" id="zOut" aria-label="Zoom out">−</button>
+        </div>
+        <div class="tip" id="tip" hidden></div>
+      </div>
+      <div class="insets" id="insets">
+        <button class="inset" type="button" data-region="mtl"><svg data-inset="mtl" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Montréal &amp; Laval</span></button>
+        <button class="inset" type="button" data-region="qc"><svg data-inset="qc" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Québec City</span></button>
+        <button class="inset" type="button" data-region="gat"><svg data-inset="gat" aria-hidden="true"><use href="#ridingsLayer"></use></svg><span>Gatineau</span></button>
+      </div>
+      <div class="map-foot">
+        <div class="legend">
+          <span class="k"><i></i>Won</span>
+          <span class="k"><i class="tint"></i>Leading</span>
+          <span class="k"><i class="none"></i>No results yet</span>
+        </div>
+        <span class="hint">Drag to pan · pinch or ⌘/Ctrl + scroll to zoom · click a riding for details</span>
+      </div>
+    </section>
+
+    <div class="side">
+      <section class="card" aria-label="Riding details">
+        <div class="card-h"><h2 id="panelTitle">Closest races</h2><span class="note" id="panelNote"></span></div>
+        <div class="panel-body" id="panel"></div>
+      </section>
+      <section class="card" aria-label="Latest changes">
+        <div class="card-h"><h2>Latest changes</h2><span class="note">Newest first</span></div>
+        <div class="panel-body feed-wrap"><ul class="feed" id="feed"></ul></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card" aria-label="All ridings">
+    <div class="card-h">
+      <h2 id="tblTitle">All 127 ridings</h2>
+      <div class="filters">
+        <label class="sr" for="q">Search ridings or candidates</label>
+        <input id="q" type="search" placeholder="Search riding or candidate" autocomplete="off">
+        <label class="sr" for="fParty">Party</label>
+        <select id="fParty">
+          <option value="">All parties</option>
+          <option value="PQ">PQ</option><option value="CAQ">CAQ</option><option value="PLQ">PLQ</option>
+          <option value="QS">QS</option><option value="PCQ">PCQ</option><option value="OTH">Other</option>
+        </select>
+        <label class="sr" for="fStatus">Status</label>
+        <select id="fStatus">
+          <option value="">Any status</option><option value="won">Won</option>
+          <option value="leading">Leading</option><option value="none">No results yet</option>
+        </select>
+        <label class="sr" for="fSort">Sort</label>
+        <select id="fSort">
+          <option value="close">Closest races first</option>
+          <option value="reported">Most counted first</option>
+          <option value="name">Riding A–Z</option>
+        </select>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th scope="col">Riding</th><th scope="col">Leading candidate</th><th scope="col" class="num">Margin</th>
+          <th scope="col">Polls counted</th><th scope="col">Status</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="tbl-foot" id="tblFoot"></div>
+  </section>
+
+  <footer>
+    <p><strong>Source.</strong> Preliminary results from the <a href="https://www.dgeq.org/donnees.html" target="_blank" rel="noopener">Élections Québec open data feed</a>. Élections Québec updates it every 2 to 5 minutes. <span id="sourceNote">This page checks for a new version every minute.</span> Riding boundaries are the 2026 electoral map (127 ridings).</p>
+    <p><strong>How seats are marked won.</strong> Élections Québec does not declare winners on election night. This page marks a riding won when every polling station has reported, when the leader's margin is larger than all ballots plausibly left to count, or when the lead is safe for the share of polls still out (at least 15% counted; the margin needed falls from about 24 points at 15% counted to about 3 points at 90%). TV networks use their own models and may call ridings earlier or differently.</p>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="data/qc-data.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  const FEED_URL = 'https://donnees.electionsquebec.qc.ca/production/provincial/resultats/resultats.json';
+  const POLL_MS = 60000;
+  const SEATS = 127, MAJORITY = 64;
+  const TZ = 'America/Toronto';
+  const STORE_KEY = 'qc2026-election-night-v1';
+
+  const PARTY_BY_NUM = { 8: 'PQ', 27: 'CAQ', 6: 'PLQ', 40: 'QS', 22: 'PCQ' };
+  const PARTY = {
+    PQ:  { short: 'PQ',  name: 'Parti Québécois' },
+    CAQ: { short: 'CAQ', name: 'Coalition avenir Québec' },
+    PLQ: { short: 'PLQ', name: 'Parti libéral du Québec' },
+    QS:  { short: 'QS',  name: 'Québec solidaire' },
+    PCQ: { short: 'PCQ', name: 'Parti conservateur du Québec' },
+    OTH: { short: 'Other', name: 'Other parties & independents' },
+  };
+  const ORDER = ['PQ', 'CAQ', 'PLQ', 'QS', 'PCQ', 'OTH'];
+  const partyKey = num => PARTY_BY_NUM[num] || 'OTH';
+  const pvar = key => `var(--${key.toLowerCase()})`;
+
+  const nf = new Intl.NumberFormat('en-CA');
+  const pf1 = new Intl.NumberFormat('en-CA', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const tf = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: TZ });
+  const tfs = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', second: '2-digit', timeZone: TZ });
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const parseTime = s => { if (!s) return null; const d = new Date(String(s).replace(',', '.')); return isNaN(d) ? null : d; };
+  const fold = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const $ = id => document.getElementById(id);
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Shared (artifact) build: results are embedded and the page is republished with each feed update.
+  const SNAP = window.QC_SNAPSHOT || null;
+
+  // ---------- Persistent per-browser store (ticker + sticky calls) ----------
+  const store = (() => { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; } })();
+  store.events = store.events || [];
+  store.called = store.called || {};
+  if (SNAP) { store.events = SNAP.events || []; store.called = SNAP.called || {}; }
+  const save = () => { if (SNAP) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch { /* storage unavailable */ } };
+
+  // ---------- Theme toggle ----------
+  const themeBtn = $('themeBtn');
+  const themes = ['auto', 'dark', 'light'];
+  let theme = (() => { try { return localStorage.getItem('qc2026-theme') || 'auto'; } catch { return 'auto'; } })();
+  const applyTheme = () => {
+    if (theme === 'auto') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = theme;
+    themeBtn.textContent = 'Theme: ' + theme;
+  };
+  themeBtn.addEventListener('click', () => {
+    theme = themes[(themes.indexOf(theme) + 1) % themes.length];
+    try { localStorage.setItem('qc2026-theme', theme); } catch { /* ignore */ }
+    applyTheme();
+  });
+  applyTheme();
+
+  // ---------- Base riding data ----------
+  const topo = window.QC_MAP;
+  const obj = topo.objects[Object.keys(topo.objects)[0]];
+  const features = topojson.feature(topo, obj).features;
+  const incumbents = new Set();
+  const candById = new Map();
+  const ridings = new Map();
+  for (const f of features) {
+    const code = +(f.id ?? f.properties.code);
+    const cands = (window.QC_CANDIDATES[code] || []).map(([name, pnum, abbr, inc, id]) => {
+      if (inc) incumbents.add(id);
+      candById.set(id, { name, abbr });
+      return { id, name, pnum, abbr, inc: !!inc, votes: 0, pct: 0 };
+    }).sort((a, b) => ORDER.indexOf(partyKey(a.pnum)) - ORDER.indexOf(partyKey(b.pnum)) || a.name.localeCompare(b.name));
+    ridings.set(code, {
+      code, name: f.properties.name, feature: f, cands,
+      done: 0, total: 0, p: 0, valid: 0, cast: 0, reg: 0, turnout: null, final: false,
+      status: 'none', leader: null, second: null, marginVotes: 0, marginPts: 0,
+    });
+  }
+
+  let stats = null;
+  let feedTime = null;
+  let provTurnout = NaN;
+  let lastEtag = null;
+  let selected = null;
+
+  // ---------- Classification ----------
+  function isCalled(r) {
+    if (r.final || (r.total > 0 && r.done >= r.total)) return true;
+    if (r.p < 0.15) return false;
+    const t = clamp(isFinite(provTurnout) ? provTurnout / 100 : 0.68, 0.5, 0.85);
+    const capRemaining = Math.max(0, r.reg * Math.min(0.92, t + 0.08) - r.cast);
+    const pollRemaining = r.done ? (r.cast / r.done) * (r.total - r.done) : Infinity;
+    if (r.marginVotes > Math.max(capRemaining, pollRemaining)) return true;
+    return r.marginPts >= 2 + 28 * Math.pow(1 - r.p, 1.5);
+  }
+
+  function classify(r) {
+    r.p = r.total ? r.done / r.total : 0;
+    const [a, b] = r.cands;
+    const has = r.valid > 0 && a && a.votes > 0;
+    if (!has) { Object.assign(r, { status: 'none', leader: null, second: null, marginVotes: 0, marginPts: 0 }); return; }
+    r.marginVotes = a.votes - (b ? b.votes : 0);
+    r.marginPts = (r.marginVotes / r.valid) * 100;
+    r.second = b ? partyKey(b.pnum) : null;
+    if (r.marginVotes === 0) { r.status = 'tied'; r.leader = null; return; }
+    r.leader = partyKey(a.pnum);
+    r.status = isCalled(r) ? 'won' : 'leading';
+    // Once called in this browser, keep the call while the same party stays ahead.
+    if (r.status === 'leading' && store.called[r.code] === r.leader) r.status = 'won';
+  }
+
+  function applyFeed(data) {
+    stats = data.statistiques || {};
+    feedTime = parseTime(stats.iso8601DateMAJ) || new Date();
+    provTurnout = parseFloat(stats.tauxParticipationTotal);
+    for (const f of data.circonscriptions || []) {
+      const r = ridings.get(f.numeroCirconscription);
+      if (!r) continue;
+      r.name = f.nomCirconscription || r.name;
+      r.done = f.nbBureauComplete || 0;
+      r.total = f.nbBureauTotal || 0;
+      r.valid = f.nbVoteValide || 0;
+      r.cast = f.nbVoteExerce || 0;
+      r.reg = f.nbElecteurInscrit || 0;
+      const t = parseFloat(f.tauxParticipation);
+      r.turnout = isFinite(t) ? t : null;
+      r.final = !!f.isResultatsFinaux;
+      if (Array.isArray(f.candidats) && f.candidats.length) {
+        r.cands = f.candidats.map(c => ({
+          id: c.numeroCandidat, name: `${c.prenom || ''} ${c.nom || ''}`.trim(),
+          pnum: c.numeroPartiPolitique, abbr: c.abreviationPartiPolitique,
+          votes: c.nbVoteTotal || 0, pct: c.tauxVote || 0, inc: incumbents.has(c.numeroCandidat),
+        })).sort((a, b) => b.votes - a.votes);
+      }
+      classify(r);
+    }
+  }
+
+  function snapToFeed(sn) {
+    return {
+      statistiques: sn.stats,
+      circonscriptions: sn.ridings.map(([code, done, total, valid, cast, reg, turnout, fin, cands]) => ({
+        numeroCirconscription: code, nbBureauComplete: done, nbBureauTotal: total, nbVoteValide: valid,
+        nbVoteExerce: cast, nbElecteurInscrit: reg, tauxParticipation: turnout, isResultatsFinaux: !!fin,
+        candidats: cands.map(([id, pnum, votes, pct]) => {
+          const b = candById.get(id) || {};
+          return { numeroCandidat: id, numeroPartiPolitique: pnum, nbVoteTotal: votes, tauxVote: pct, prenom: '', nom: b.name || 'Candidate', abreviationPartiPolitique: b.abbr || '' };
+        }),
+      })),
+    };
+  }
+
+  // ---------- Change log ----------
+  function logChanges(isFirstLoad) {
+    const prev = store.prev;
+    const now = {};
+    const events = [];
+    let firstResults = 0;
+    const t = (feedTime || new Date()).toISOString();
+    const changed = [];
+    for (const r of ridings.values()) {
+      now[r.code] = [r.leader, r.status];
+      if (r.status === 'won') store.called[r.code] = r.leader;
+      else if (store.called[r.code] && store.called[r.code] !== r.leader) delete store.called[r.code];
+      const p = prev && prev[r.code];
+      if (!p) { if (!prev && r.status === 'won') events.push({ t, type: 'win', code: r.code, party: r.leader }); continue; }
+      const [pl, ps] = p;
+      if (pl === r.leader && ps === r.status) continue;
+      changed.push(r.code);
+      if (r.status === 'won' && (ps !== 'won' || pl !== r.leader)) events.push({ t, type: 'win', code: r.code, party: r.leader });
+      else if (r.leader && pl && r.leader !== pl) events.push({ t, type: 'flip', code: r.code, party: r.leader, from: pl });
+      else if (ps === 'none' && r.status !== 'none') firstResults++;
+    }
+    if (firstResults) events.push({ t, type: 'first', n: firstResults });
+    if (events.length) store.events = events.reverse().concat(store.events).slice(0, 120);
+    store.prev = now;
+    save();
+    if (!isFirstLoad) pulse(changed);
+  }
+
+  // ---------- Map ----------
+  const svg = $('map');
+  const NS = 'http://www.w3.org/2000/svg';
+  const W = 900, PAD = 14;
+  const fc = { type: 'FeatureCollection', features };
+  const projection = d3.geoConicConformal().parallels([46, 60]).rotate([68.5, 0]).fitWidth(W - 2 * PAD, fc);
+  const geoPath = d3.geoPath(projection);
+  const b0 = geoPath.bounds(fc);
+  const [tx, ty] = projection.translate();
+  projection.translate([tx + PAD - b0[0][0], ty + PAD - b0[0][1]]);
+  const H = Math.ceil(b0[1][1] - b0[0][1] + 2 * PAD);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const bg = document.createElementNS(NS, 'rect');
+  Object.entries({ x: 0, y: 0, width: W, height: H, fill: 'transparent' }).forEach(([k, v]) => bg.setAttribute(k, v));
+  svg.appendChild(bg);
+  const zoomer = document.createElementNS(NS, 'g');
+  svg.appendChild(zoomer);
+  const layer = document.createElementNS(NS, 'g');
+  layer.id = 'ridingsLayer';
+  zoomer.appendChild(layer);
+  const pathsG = document.createElementNS(NS, 'g');
+  layer.appendChild(pathsG);
+  const pathEls = new Map();
+  const pathD = new Map();
+  for (const r of ridings.values()) {
+    const d = geoPath(r.feature);
+    pathD.set(r.code, d);
+    const el = document.createElementNS(NS, 'path');
+    el.setAttribute('d', d);
+    el.setAttribute('class', 'r');
+    el.setAttribute('vector-effect', 'non-scaling-stroke');
+    el.dataset.code = r.code;
+    el.style.cssText = 'fill: var(--map-empty); stroke: var(--surface); stroke-width: .7px; stroke-linejoin: round;';
+    pathsG.appendChild(el);
+    pathEls.set(r.code, el);
+  }
+  const mkOutline = (parent, style) => {
+    const el = document.createElementNS(NS, 'path');
+    el.setAttribute('vector-effect', 'non-scaling-stroke');
+    el.style.cssText = style;
+    parent.appendChild(el);
+    return el;
+  };
+  const selOutline = mkOutline(layer, 'fill: none; stroke: var(--ink); stroke-width: 2.4px; stroke-linejoin: round; pointer-events: none;');
+  const hoverOutline = mkOutline(zoomer, 'fill: none; stroke: var(--ink); stroke-width: 1.4px; stroke-linejoin: round; pointer-events: none;');
+
+  const REGIONS = {
+    south: [-79.6, 44.95, -61.2, 49.45],
+    gmtl: [-74.5, 45.15, -73.05, 45.98],
+    mtl: [-73.98, 45.40, -73.47, 45.71],
+    qc: [-71.56, 46.72, -71.03, 46.99],
+    gat: [-76.02, 45.37, -75.43, 45.63],
+  };
+  function projBox([x0, y0, x1, y1]) {
+    const xs = [], ys = [];
+    for (let i = 0; i <= 10; i++) {
+      const u = i / 10;
+      for (const pt of [[x0 + (x1 - x0) * u, y0], [x0 + (x1 - x0) * u, y1], [x0, y0 + (y1 - y0) * u], [x1, y0 + (y1 - y0) * u]]) {
+        const [x, y] = projection(pt); xs.push(x); ys.push(y);
+      }
+    }
+    return [[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]];
+  }
+  document.querySelectorAll('svg[data-inset]').forEach(s => {
+    const [[x0, y0], [x1, y1]] = projBox(REGIONS[s.dataset.inset]);
+    s.setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+  });
+
+  const zoom = d3.zoom()
+    .scaleExtent([1, 180])
+    .translateExtent([[0, 0], [W, H]])
+    .filter(ev => ev.type === 'wheel' ? (ev.ctrlKey || ev.metaKey) : (!ev.ctrlKey && !ev.button))
+    .on('zoom', ev => {
+      zoomer.setAttribute('transform', ev.transform);
+      currentT = ev.transform;
+      if (ev.sourceEvent) setPreset(null);
+    });
+  let currentT = d3.zoomIdentity;
+  const svgSel = d3.select(svg).call(zoom);
+  const dur = reducedMotion ? 0 : 750;
+
+  function zoomToBounds([[x0, y0], [x1, y1]], maxK = 180) {
+    const k = clamp(0.92 / Math.max((x1 - x0) / W, (y1 - y0) / H), 1, maxK);
+    const t = d3.zoomIdentity.translate(W / 2, H / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+    svgSel.transition().duration(dur).call(zoom.transform, t);
+  }
+  function setPreset(name) {
+    document.querySelectorAll('#presets .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.region === name)));
+  }
+  function goRegion(name) {
+    setPreset(name);
+    if (name === 'province' || !REGIONS[name]) svgSel.transition().duration(dur).call(zoom.transform, d3.zoomIdentity);
+    else zoomToBounds(projBox(REGIONS[name]));
+  }
+  document.querySelectorAll('[data-region]').forEach(b => b.addEventListener('click', () => {
+    goRegion(b.dataset.region);
+    if (b.classList.contains('inset')) $('mapArea').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+  }));
+  $('zIn').addEventListener('click', () => svgSel.transition().duration(300).call(zoom.scaleBy, 1.8));
+  $('zOut').addEventListener('click', () => svgSel.transition().duration(300).call(zoom.scaleBy, 1 / 1.8));
+
+  function zoomToRiding(code) {
+    const r = ridings.get(code);
+    const [[x0, y0], [x1, y1]] = geoPath.bounds(r.feature);
+    const m = Math.max(x1 - x0, y1 - y0) * 0.9 + 2;
+    setPreset(null);
+    zoomToBounds([[x0 - m, y0 - m], [x1 + m, y1 + m]], 90);
+  }
+
+  function paintMap() {
+    for (const r of ridings.values()) {
+      const el = pathEls.get(r.code);
+      let fill = 'var(--map-empty)', op = 1;
+      if (r.status === 'won') fill = pvar(r.leader);
+      else if (r.status === 'leading') { fill = pvar(r.leader); op = 'var(--lead-alpha)'; }
+      else if (r.status === 'tied') { fill = 'var(--muted)'; op = .5; }
+      el.style.fill = fill;
+      el.style.fillOpacity = op;
+    }
+  }
+  function pulse(codes) {
+    if (reducedMotion) return;
+    for (const c of codes) {
+      const el = pathEls.get(c);
+      if (!el) continue;
+      el.classList.remove('pulse');
+      void el.getBBox();
+      el.classList.add('pulse');
+      setTimeout(() => el.classList.remove('pulse'), 5000);
+    }
+  }
+
+  // ---------- Tooltip ----------
+  const tip = $('tip');
+  const mapArea = $('mapArea');
+  function statusLine(r) {
+    if (r.status === 'none') return '<span class="muted">No results yet</span>';
+    if (r.status === 'tied') return '<strong>Tied</strong>';
+    const lead = r.cands[0];
+    const verb = r.status === 'won' ? 'won' : `leads by ${nf.format(r.marginVotes)}`;
+    return `<span class="row"><span class="sw" style="--c:${pvar(r.leader)}"></span><strong>${esc(PARTY[r.leader].short === 'Other' ? lead.abbr : PARTY[r.leader].short)}</strong>&nbsp;${verb}</span>
+      <span class="muted">${esc(lead.name)} · ${pf1.format(lead.pct)}%</span>`;
+  }
+  function showTip(code, ev) {
+    const r = ridings.get(code);
+    tip.innerHTML = `<b>${esc(r.name)}</b>${statusLine(r)}<div class="muted">${r.total ? `${nf.format(r.done)} of ${nf.format(r.total)} polling stations` : 'Counting has not started'}</div>`;
+    tip.hidden = false;
+    const box = mapArea.getBoundingClientRect();
+    let x = ev.clientX - box.left + 14, y = ev.clientY - box.top + 14;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    if (x + tw > box.width - 6) x = ev.clientX - box.left - tw - 14;
+    if (y + th > box.height - 6) y = ev.clientY - box.top - th - 14;
+    tip.style.left = Math.max(6, x) + 'px';
+    tip.style.top = Math.max(6, y) + 'px';
+  }
+  pathsG.addEventListener('pointermove', ev => {
+    if (ev.pointerType === 'touch') return;
+    const code = +ev.target.dataset.code;
+    if (!code) return;
+    hoverOutline.setAttribute('d', pathD.get(code));
+    showTip(code, ev);
+  });
+  pathsG.addEventListener('pointerleave', () => { tip.hidden = true; hoverOutline.removeAttribute('d'); });
+  pathsG.addEventListener('click', ev => {
+    const code = +ev.target.dataset.code;
+    if (code) select(code, { zoom: false });
+  });
+
+  // ---------- Selection ----------
+  function select(code, { zoom: doZoom = true, scroll = false } = {}) {
+    selected = code;
+    selOutline.setAttribute('d', code ? pathD.get(code) : '');
+    if (code && doZoom) zoomToRiding(code);
+    renderPanel();
+    renderTable();
+    if (scroll && code) $('mapArea').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+  }
+
+  // ---------- Rendering ----------
+  function tally() {
+    const t = Object.fromEntries(ORDER.map(k => [k, { key: k, won: 0, lead: 0, votes: 0, pct: 0 }]));
+    for (const r of ridings.values()) {
+      if (r.status === 'won') t[r.leader].won++;
+      else if (r.status === 'leading') t[r.leader].lead++;
+    }
+    for (const p of (stats && stats.partisPolitiques) || []) {
+      const k = partyKey(p.numeroPartiPolitique);
+      t[k].votes += p.nbVoteTotal || 0;
+      t[k].pct += p.tauxVoteTotal || 0;
+    }
+    return ORDER.map(k => t[k]).sort((a, b) =>
+      (a.key === 'OTH') - (b.key === 'OTH') || (b.won + b.lead) - (a.won + a.lead) || b.won - a.won || b.votes - a.votes);
+  }
+
+  function renderRace() {
+    const parties = tally();
+    const top = parties[0];
+    const topSeats = top.won + top.lead;
+    const anyResults = parties.some(p => p.won + p.lead > 0);
+    const hl = $('headline'), sub = $('headlineSub');
+    const nm = k => PARTY[k].short;
+    if (!anyResults) {
+      hl.textContent = 'Waiting for the first results';
+      sub.textContent = 'Polls closed at 8:00 p.m. 64 of 127 seats are needed for a majority.';
+    } else {
+      const second = parties[1];
+      if (top.won >= MAJORITY) hl.textContent = `${nm(top.key)} wins a majority government`;
+      else if (topSeats >= MAJORITY) hl.textContent = `${nm(top.key)} is ahead in enough ridings for a majority`;
+      else if (stats && stats.isResultatsFinaux) hl.textContent = `${nm(top.key)} wins the most seats, short of a majority`;
+      else hl.textContent = `${nm(top.key)} is ahead in ${topSeats} ridings`;
+      const gap = MAJORITY - top.won;
+      sub.textContent = top.won >= MAJORITY
+        ? `${top.won} seats won so far, with ${top.lead} more where ${nm(top.key)} leads. ${nm(second.key)} is second with ${second.won + second.lead}.`
+        : `${top.won} won so far, ${gap} short of the 64 needed for a majority. ${nm(second.key)} is next with ${second.won + second.lead} (${second.won} won).`;
+    }
+
+    // Seat strip: party by party, won seats first then leads, then uncounted.
+    const cells = [];
+    for (const p of parties) {
+      for (let i = 0; i < p.won; i++) cells.push(`<i class="won" style="--c:${pvar(p.key)}"></i>`);
+      for (let i = 0; i < p.lead; i++) cells.push(`<i class="lead" style="--c:${pvar(p.key)}"></i>`);
+    }
+    while (cells.length < SEATS) cells.push('<i></i>');
+    const strip = $('strip');
+    strip.innerHTML = cells.join('');
+    strip.setAttribute('aria-label', parties.filter(p => p.won + p.lead).map(p => `${nm(p.key)}: ${p.won} won, ${p.lead} leading`).join('; ') || 'No seats reported yet');
+
+    $('parties').innerHTML = parties.map(p => {
+      const showName = p.key === 'OTH' ? PARTY.OTH.name : PARTY[p.key].name;
+      const w = (p.won / SEATS) * 100, l = (p.lead / SEATS) * 100;
+      return `<div class="prow" style="--c:${pvar(p.key)}">
+        <div class="p-id"><span class="sw"></span><b>${esc(PARTY[p.key].short)}</b><span title="${esc(showName)}">${esc(showName)}</span></div>
+        <div class="p-seats"><span class="n">${p.won + p.lead}</span><span class="sub">${p.won} won · ${p.lead} lead</span></div>
+        <div class="p-bar"><div class="track">${p.won ? `<span class="won" style="width:${w}%"></span>` : ''}${p.lead ? `<span class="lead" style="width:${l}%"></span>` : ''}<i class="maj" aria-hidden="true"></i></div></div>
+        <div class="p-vote"><b>${pf1.format(p.pct)}%</b><span>${nf.format(p.votes)} votes</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderCounts() {
+    if (!stats) return;
+    const pr = stats.nbBureauVote ? (stats.nbBureauVoteRempli / stats.nbBureauVote) * 100 : 0;
+    $('cPolls').innerHTML = `${pf1.format(pr)}%<small>${nf.format(stats.nbBureauVoteRempli || 0)} of ${nf.format(stats.nbBureauVote || 0)}</small>`;
+    $('mPolls').style.width = pr + '%';
+    const withRes = [...ridings.values()].filter(r => r.status !== 'none').length;
+    $('cRidings').innerHTML = `${withRes}<small>of ${SEATS}</small>`;
+    $('mRidings').style.width = (withRes / SEATS) * 100 + '%';
+    const cast = stats.nbVoteExerce || 0, reg = stats.nbElecteurInscrit || 0;
+    $('cVotes').innerHTML = `${nf.format(cast)}<small>${reg ? `${pf1.format((cast / reg) * 100)}% of ${nf.format(reg)} electors` : ''}</small>`;
+    $('mVotes').style.width = reg ? clamp((cast / reg) * 100, 0, 100) + '%' : '0';
+  }
+
+  function partyLabel(r, c) {
+    const k = partyKey(c.pnum);
+    return k === 'OTH' ? (c.abbr || 'Ind.') : PARTY[k].short;
+  }
+
+  function renderPanel() {
+    const panel = $('panel');
+    if (!selected) {
+      $('panelTitle').textContent = 'Closest races';
+      $('panelNote').textContent = 'Smallest leads, not yet won';
+      const close = [...ridings.values()]
+        .filter(r => r.status === 'leading' || r.status === 'tied')
+        .sort((a, b) => a.marginPts - b.marginPts)
+        .slice(0, 8);
+      if (!close.length) {
+        panel.innerHTML = `<p class="empty">${stats ? 'No close races right now. Ridings where the lead is still in play will show up here.' : 'Close races appear here once counting starts.'}</p>
+          <p class="empty">Click a riding on the map or in the table to see every candidate's count.</p>`;
+        return;
+      }
+      panel.innerHTML = `<ul class="close-list">${close.map(r => {
+        const a = r.cands[0], b = r.cands[1];
+        return `<li><button type="button" data-code="${r.code}">
+          <span class="nm">${esc(r.name)}</span>
+          <span class="mg">${r.status === 'tied' ? 'Tied' : `+${nf.format(r.marginVotes)}`}</span>
+          <span class="ds"><span class="sw" style="--c:${r.leader ? pvar(r.leader) : 'var(--muted)'}"></span>${esc(partyLabel(r, a))} over ${b ? esc(partyLabel(r, b)) : '–'} · ${pf1.format(r.marginPts)} pts</span>
+          <span class="rp">${Math.round(r.p * 100)}% counted</span>
+        </button></li>`;
+      }).join('')}</ul>`;
+      panel.querySelectorAll('button[data-code]').forEach(b => b.addEventListener('click', () => select(+b.dataset.code)));
+      return;
+    }
+
+    const r = ridings.get(selected);
+    $('panelTitle').textContent = 'Riding';
+    $('panelNote').textContent = r.code ? `No. ${r.code}` : '';
+    let pill;
+    if (r.status === 'won') pill = `<span class="pill won" style="--c:${pvar(r.leader)}">${esc(partyLabel(r, r.cands[0]))} won</span>`;
+    else if (r.status === 'leading') pill = `<span class="pill lead" style="--c:${pvar(r.leader)}">${esc(partyLabel(r, r.cands[0]))} leads by ${nf.format(r.marginVotes)} votes</span>`;
+    else if (r.status === 'tied') pill = `<span class="pill">Tied</span>`;
+    else pill = `<span class="pill none">No results yet</span>`;
+    const hasVotes = r.status !== 'none';
+    const turnout = r.turnout != null ? `Turnout ${pf1.format(r.turnout)}%` : (r.reg ? `${nf.format(r.reg)} electors` : '');
+    panel.innerHTML = `
+      <button class="d-back" type="button" id="backBtn">← Closest races</button>
+      <h3 class="d-name">${esc(r.name)}</h3>
+      ${pill}
+      <div class="d-meta"><span>${r.total ? `${nf.format(r.done)} of ${nf.format(r.total)} polling stations` : 'Counting has not started'}</span><span>${esc(turnout)}</span></div>
+      <div class="meter"><span style="width:${r.p * 100}%"></span></div>
+      <ol class="cands">${r.cands.map((c, i) => {
+        const k = partyKey(c.pnum);
+        return `<li class="cand${i === 0 && hasVotes ? ' first' : ''}${r.status === 'won' ? ' called' : ''}" style="--c:${pvar(k)}">
+          <div class="top"><span class="nm">${esc(c.name)}${c.inc ? '<em>Incumbent</em>' : ''}</span><span class="vt">${hasVotes ? nf.format(c.votes) : ''}</span></div>
+          <div class="bar"><span style="width:${hasVotes ? c.pct : 0}%"></span></div>
+          <div class="sub"><span>${esc(k === 'OTH' ? (c.abbr || 'Independent') : PARTY[k].name)}</span><span>${hasVotes ? pf1.format(c.pct) + '%' : ''}</span></div>
+        </li>`;
+      }).join('')}</ol>`;
+    $('backBtn').addEventListener('click', () => select(null, { zoom: false }));
+  }
+
+  function renderFeed() {
+    const list = $('feed');
+    if (!store.events.length) {
+      list.innerHTML = `<li><time></time><span class="empty">New leads and won seats appear here as each update comes in from Élections Québec.</span></li>`;
+      return;
+    }
+    list.innerHTML = store.events.slice(0, 80).map(e => {
+      const r = e.code ? ridings.get(e.code) : null;
+      const when = tf.format(new Date(e.t));
+      const link = r ? `<button type="button" data-code="${r.code}">${esc(r.name)}</button>` : '';
+      let txt = '';
+      if (e.type === 'win') txt = `<span class="sw" style="--c:${pvar(e.party)}"></span><b>${esc(PARTY[e.party].short)}</b> wins ${link}`;
+      else if (e.type === 'flip') txt = `<span class="sw" style="--c:${pvar(e.party)}"></span><b>${esc(PARTY[e.party].short)}</b> takes the lead from ${esc(PARTY[e.from].short)} in ${link}`;
+      else if (e.type === 'first') txt = `First results in ${e.n} more riding${e.n === 1 ? '' : 's'}`;
+      return `<li><time>${when}</time><span>${txt}</span></li>`;
+    }).join('');
+    list.querySelectorAll('button[data-code]').forEach(b => b.addEventListener('click', () => select(+b.dataset.code, { scroll: true })));
+  }
+
+  const tbody = $('tbody');
+  function renderTable() {
+    const q = fold($('q').value.trim());
+    const fp = $('fParty').value, fs = $('fStatus').value, sort = $('fSort').value;
+    let rows = [...ridings.values()].filter(r => {
+      if (fp && r.leader !== fp) return false;
+      if (fs === 'won' && r.status !== 'won') return false;
+      if (fs === 'leading' && r.status !== 'leading' && r.status !== 'tied') return false;
+      if (fs === 'none' && r.status !== 'none') return false;
+      if (q && !fold(r.name).includes(q) && !r.cands.some(c => fold(c.name).includes(q))) return false;
+      return true;
+    });
+    const rank = r => r.status === 'none' ? 2 : r.status === 'won' ? 1 : 0;
+    if (sort === 'close') rows.sort((a, b) => rank(a) - rank(b) || a.marginPts - b.marginPts || a.name.localeCompare(b.name, 'fr'));
+    else if (sort === 'reported') rows.sort((a, b) => b.p - a.p || a.name.localeCompare(b.name, 'fr'));
+    else rows.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+    tbody.innerHTML = rows.map(r => {
+      const a = r.cands[0];
+      const has = r.status !== 'none';
+      const who = has && a
+        ? `<div class="who"><span class="sw" style="--c:${r.leader ? pvar(r.leader) : 'var(--muted)'}"></span><b>${esc(partyLabel(r, a))}</b><span>${esc(a.name)}</span></div>`
+        : '<span class="st none">–</span>';
+      const margin = has ? `+${nf.format(r.marginVotes)} <span style="color:var(--muted)">· ${pf1.format(r.marginPts)} pts</span>` : '';
+      let st;
+      if (r.status === 'won') st = `<span class="st won" style="--c:${pvar(r.leader)}">Won</span>`;
+      else if (r.status === 'leading') st = `<span class="st" style="--c:${pvar(r.leader)}">Leading</span>`;
+      else if (r.status === 'tied') st = `<span class="st">Tied</span>`;
+      else st = `<span class="st none">No results</span>`;
+      return `<tr tabindex="0" data-code="${r.code}" aria-selected="${r.code === selected}">
+        <td><strong>${esc(r.name)}</strong></td>
+        <td>${who}</td>
+        <td class="num">${margin}</td>
+        <td><span class="mini"><span style="width:${r.p * 100}%"></span></span>${r.total ? `${Math.round(r.p * 100)}%` : '–'}</td>
+        <td>${st}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="5" class="empty">No ridings match these filters.</td></tr>`;
+    $('tblTitle').textContent = rows.length === SEATS ? 'All 127 ridings' : `${rows.length} of 127 ridings`;
+  }
+  tbody.addEventListener('click', ev => {
+    const tr = ev.target.closest('tr[data-code]');
+    if (tr) select(+tr.dataset.code, { scroll: true });
+  });
+  tbody.addEventListener('keydown', ev => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    const tr = ev.target.closest('tr[data-code]');
+    if (tr) { ev.preventDefault(); select(+tr.dataset.code, { scroll: true }); }
+  });
+  ['q', 'fParty', 'fStatus', 'fSort'].forEach(id => $(id).addEventListener('input', renderTable));
+
+  function renderAll() {
+    renderRace();
+    renderCounts();
+    paintMap();
+    renderPanel();
+    renderFeed();
+    renderTable();
+    const won = [...ridings.values()].filter(r => r.status === 'won').length;
+    $('tblFoot').textContent = stats
+      ? `${won} won · ${[...ridings.values()].filter(r => r.status === 'leading').length} leading · ${[...ridings.values()].filter(r => r.status === 'none').length} with no results yet. Click a row to open the riding.`
+      : '';
+  }
+
+  // ---------- Live loop ----------
+  const pill = $('livePill'), liveTxt = $('liveTxt'), updated = $('updated'), countdown = $('countdown'), banner = $('banner');
+  let nextAt = 0, loading = false, firstLoad = true, lastCheck = null;
+
+  function setLive(state, text) { pill.dataset.state = state; liveTxt.textContent = text; }
+
+  async function load() {
+    if (loading) return;
+    loading = true;
+    $('refreshBtn').disabled = true;
+    try {
+      const res = await fetch(FEED_URL, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`Élections Québec answered with HTTP ${res.status}.`);
+      const etag = res.headers.get('etag');
+      const data = await res.json();
+      lastCheck = new Date();
+      if (firstLoad || etag !== lastEtag || !etag) {
+        lastEtag = etag;
+        applyFeed(data);
+        logChanges(firstLoad);
+        renderAll();
+      }
+      firstLoad = false;
+      banner.hidden = true;
+      const final = stats && stats.isResultatsFinaux;
+      setLive(final ? 'final' : 'live', final ? 'Final' : 'Live');
+      updated.textContent = feedTime ? `Results as of ${tf.format(feedTime)}` : 'Results received';
+      updated.title = `Last checked ${tfs.format(lastCheck)}`;
+    } catch (err) {
+      setLive('error', 'Reconnecting');
+      banner.hidden = false;
+      banner.textContent = `Can't reach the Élections Québec results feed right now (${err.message || 'network error'}). The page keeps the last results and tries again every minute.`;
+      if (firstLoad) renderAll();
+    } finally {
+      loading = false;
+      $('refreshBtn').disabled = false;
+      nextAt = Date.now() + POLL_MS;
+      tick();
+    }
+  }
+  function tick() {
+    const s = Math.max(0, Math.round((nextAt - Date.now()) / 1000));
+    countdown.textContent = loading ? 'Checking…' : `Next check in ${s}s`;
+    if (!loading && Date.now() >= nextAt) load();
+  }
+  const ageFmt = d => {
+    const m = Math.round((Date.now() - d) / 60000);
+    return m < 1 ? 'just now' : m === 1 ? '1 min ago' : m < 90 ? `${m} min ago` : `${Math.round(m / 60)} h ago`;
+  };
+  function showSnapshotStatus() {
+    const final = stats && stats.isResultatsFinaux;
+    setLive(final ? 'final' : 'live', final ? 'Final' : 'Live');
+    updated.textContent = feedTime ? `Results as of ${tf.format(feedTime)}` : 'Results received';
+    countdown.textContent = feedTime ? `${ageFmt(feedTime)} · updates on its own` : 'Updates on its own';
+  }
+
+  function start(prev) {
+    if (SNAP) {
+      $('refreshBtn').hidden = true;
+      $('sourceNote').textContent = 'This shared page is republished with every new update, and open copies refresh on their own.';
+      applyFeed(snapToFeed(SNAP));
+      for (const r of ridings.values()) if (r.status === 'leading' && store.called[r.code] === r.leader) r.status = 'won';
+      renderAll();
+      showSnapshotStatus();
+      setInterval(showSnapshotStatus, 30000);
+      if (prev && prev.statuses) {
+        pulse([...ridings.values()].filter(r => { const p = prev.statuses[r.code]; return p && (p[0] !== r.leader || p[1] !== r.status); }).map(r => r.code));
+      }
+    } else {
+      renderAll();
+      setInterval(tick, 1000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() > nextAt - 5000) load(); });
+      $('refreshBtn').addEventListener('click', load);
+      load();
+    }
+    if (prev && prev.selected && ridings.has(prev.selected)) select(prev.selected, { zoom: false });
+    if (prev && prev.t) svgSel.call(zoom.transform, d3.zoomIdentity.translate(prev.t.x, prev.t.y).scale(prev.t.k));
+  }
+
+  const hot = window.claude?.hot;
+  hot?.snapshot?.(() => ({
+    selected,
+    t: { k: currentT.k, x: currentT.x, y: currentT.y },
+    statuses: Object.fromEntries([...ridings.values()].map(r => [r.code, [r.leader, r.status]])),
+  }));
+  hot?.ready ? hot.ready(start) : start(hot?.data ?? {});
+})();
+</script>
+</body>
+</html>
